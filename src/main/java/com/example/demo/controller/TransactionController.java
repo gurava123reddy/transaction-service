@@ -1,38 +1,28 @@
 package com.example.demo.controller;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.entity.Transaction;
-import com.example.demo.service.TransactionService;
+import com.example.demo.entity.Account1;
+import com.example.demo.repository.Account1Reposotory;
 
 @RestController
-@RequestMapping("/transactions")
 public class TransactionController {
-    private final TransactionService transactionService;
+	
+	@Autowired
+	private Account1Reposotory account1Repository;
 
-    @Autowired
-    public TransactionController(TransactionService transactionService) {
-        this.transactionService = transactionService;
+
+    @PostMapping("/create-account")
+    public ResponseEntity<String> createAccount(@RequestBody Account1 account1) {
+    	
+    	Account1 savedAccount = account1Repository.save(account1);
+    	
+    	return new ResponseEntity<>("Account1 with " + savedAccount.getAccountNumber() + " saved successfully", HttpStatus.CREATED);
+    	
     }
-
-    @PostMapping
-    public Transaction createTransaction(@RequestBody Transaction transaction) {
-    	 // Implement the logic to create a transaction
-		return transactionService.createTransaction(transaction);
-    }
-
-    @GetMapping
-    public List<Transaction> getAllTransactions() {
-    	// Implement the logic to get all transactions
-		return transactionService.getAllTransactions();
-    }     
-    
-    @GetMapping("/{accountNumber}")
-    public List<Transaction> getByAccountNumber(@PathVariable("accountNumber") String accountNumber) {
-    	// Implement the logic to get all transactions
-		return transactionService.getByAccountNumber(accountNumber);
-    }     
-    
 }
